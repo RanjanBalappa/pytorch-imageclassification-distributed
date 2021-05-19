@@ -1,4 +1,4 @@
-# Pytorch image classification distributed
+## Pytorch image classification distributed
 
 Pyotch distributed data parallel usage for image classification
 
