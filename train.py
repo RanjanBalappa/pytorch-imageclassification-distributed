@@ -25,7 +25,9 @@ from ddp_utils import all_gather
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--local_rank", default=0, type=int)
+parser.add_argument('--local_rank', default=0, type=int)
+parser.add_argument('--datadir', required=True, default='')
+parser.add_argument('--batchsize', default=4, type=int)
 args = parser.parse_args()
 
 
@@ -104,14 +106,14 @@ args.distributed = True if args.world_size else False
 torch.cuda.set_device(args.local_rank)
 
 #prepare data
-DATA_DIR = ''
-RESIZE_SIZE = 299
-BATCH_SIZE = 4
-train_dataset = ImageDataset(DATA_DIR, 'train', RESIZE_SIZE)
+DATA_DIR = args.datadir
+IMAGE_SIZE = 299
+BATCH_SIZE = args.batchsize
+train_dataset = ImageDataset(DATA_DIR, 'train', IMAGE_SIZE)
 train_sampler = DistributedSampler(train_dataset)
 train_data_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=6, pin_memory=True, sampler=train_sampler)
 
-val_dataset = ImageDataset(DATA_DIR, 'valid', RESIZE_SIZE)
+val_dataset = ImageDataset(DATA_DIR, 'valid', IMAGE_SIZE)
 val_sampler = DistributedSampler(val_dataset)
 val_data_loader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=6, pin_memory=True, sampler=val_sampler)
 
